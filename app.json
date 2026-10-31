@@ -29,16 +29,11 @@
       ]
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-camera",
       "expo-media-library"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+    ]
   }
 }
