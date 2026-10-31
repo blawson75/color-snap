@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
+      "bundleIdentifier": "com.colorsnap.app",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Color Snap uses the camera to let you snapshot colors and identify them.",
