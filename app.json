@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Color Snap",
+    "slug": "color-snap",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "colorsnap",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Color Snap uses the camera to let you snapshot colors and identify them.",
+        "NSPhotoLibraryUsageDescription": "Color Snap saves your snapshot images to your photo library.",
+        "NSMicrophoneUsageDescription": "Color Snap needs microphone access for camera session defaults."
+      }
+    },
+    "android": {
+      "package": "com.colorsnap.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a2e"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-camera",
+      "expo-media-library"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
