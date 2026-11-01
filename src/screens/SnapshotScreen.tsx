@@ -98,6 +98,7 @@ export const SnapshotScreen: React.FC = () => {
   const pinchGesture = Gesture.Pinch()
     .onStart((event) => {
       'worklet';
+      console.log('Pinch start');
       focalX.value = event.focalX;
       focalY.value = event.focalY;
     })
@@ -107,6 +108,7 @@ export const SnapshotScreen: React.FC = () => {
     })
     .onEnd(() => {
       'worklet';
+      console.log('Pinch end');
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
         Math.max(-maxX, Math.min(maxX, translateX.value)),
@@ -128,6 +130,7 @@ export const SnapshotScreen: React.FC = () => {
     })
     .onEnd(() => {
       'worklet';
+      console.log('Pan end');
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
         Math.max(-maxX, Math.min(maxX, translateX.value)),
@@ -142,6 +145,7 @@ export const SnapshotScreen: React.FC = () => {
   // Tap gesture
   const tapGesture = Gesture.Tap()
     .onEnd((event) => {
+      console.log('Tap gesture fired at:', event.x, event.y);
       if (!imageDimensions) return;
       
       // Get touch position relative to screen
