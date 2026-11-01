@@ -18,7 +18,7 @@ import Animated, {
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { PanGestureHandler, PinchGestureHandler, TapGestureHandler, GestureEvent } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -92,19 +92,18 @@ export const SnapshotScreen: React.FC = () => {
     imageDims.value = dims;
   };
 
-  // Pinch gesture handler
-  const pinchHandler = useAnimatedGestureHandler<GestureEvent<{ focalX: number; focalY: number; scale: number }>>({
-    onStart: (event, _ctx) => {
+  // Pinch gesture
+  const pinchGesture = Gesture.Pinch()
+    .onStart((event) => {
       'worklet';
       focalX.value = event.focalX;
       focalY.value = event.focalY;
-    },
-    onActive: (event, _ctx) => {
+    })
+    .onUpdate((event) => {
       'worklet';
-      const newScale = Math.max(1, Math.min(5, scale.value * event.scale));
-      scale.value = newScale;
-    },
-    onEnd: () => {
+      scale.value = Math.max(1, Math.min(5, scale.value * event.scale));
+    })
+    .onEnd(() => {
       'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
@@ -115,18 +114,17 @@ export const SnapshotScreen: React.FC = () => {
         Math.max(-maxY, Math.min(maxY, translateY.value)),
         { duration: 200, easing: Easing.out(Easing.cubic) }
       );
-    },
-  });
+    });
 
-  // Pan gesture handler
-  const panHandler = useAnimatedGestureHandler<GestureEvent<{ translationX: number; translationY: number }>>({
-    onActive: (event, _ctx) => {
+  // Pan gesture
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
       'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = Math.max(-maxX, Math.min(maxX, event.translationX));
       translateY.value = Math.max(-maxY, Math.min(maxY, event.translationY));
-    },
-    onEnd: () => {
+    })
+    .onEnd(() => {
       'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
@@ -137,54 +135,48 @@ export const SnapshotScreen: React.FC = () => {
         Math.max(-maxY, Math.min(maxY, translateY.value)),
         { duration: 200, easing: Easing.out(Easing.cubic) }
       );
-    },
-  });
+    });
 
-  // Tap handler for color sampling
-  const handlePress = (event: any) => {
-    if (!imageDimensions) return;
-
-    // Get touch position relative to screen
-    const touchX = event.nativeEvent.locationX;
-    const touchY = event.nativeEvent.locationY;
-
-    // Convert to image coordinates
-    const { maxX, maxY } = getMaxTranslate();
-    
-    // The image center is at screen center + translate
-    const imageCenterX = SCREEN_WIDTH / 2 + translateX.value;
-    const imageCenterY = SCREEN_HEIGHT / 2 + translateY.value;
-    
-    // Position on the scaled image
-    const scaledWidth = imageDimensions.width * scale.value;
-    const scaledHeight = imageDimensions.height * scale.value;
-    
-    // Convert touch to image-relative coordinates
-    const imageRelativeX = (touchX - imageCenterX + scaledWidth / 2) / scale.value;
-    const imageRelativeY = (touchY - imageCenterY + scaledHeight / 2) / scale.value;
-
-    // Check if touch is within image bounds
-    if (
-      imageRelativeX >= 0 && imageRelativeX <= imageDimensions.width &&
-      imageRelativeY >= 0 && imageRelativeY <= imageDimensions.height
-    ) {
-      // Sample color from image (we'll use a simpler approach for now)
-      // In a production app, you'd use a pixel-reading library
-      // For this demo, we'll simulate by getting color from the image
-      // Since we can't easily read pixels from an Image component, 
-      // we'll use a workaround - convert touch to a color based on position
+  // Tap gesture
+  const tapGesture = Gesture.Tap()
+    .onEnd((event) => {
+      if (!imageDimensions) return;
       
-      // This is a simplified approach - in production use a library like react-native-image-colors
-      // or extract pixel data from the image file
+      // Get touch position relative to screen
+      const touchX = event.x;
+      const touchY = event.y;
+
+      // Convert to image coordinates
+      const { maxX, maxY } = getMaxTranslate();
       
-      // For now, we'll simulate by using the touch position to determine color
-      // The actual implementation would use a canvas or native module to read pixels
-      sampleColorFromImage(imageUri, imageRelativeX, imageRelativeY, imageDimensions.width, imageDimensions.height);
+      // The image center is at screen center + translate
+      const imageCenterX = SCREEN_WIDTH / 2 + translateX.value;
+      const imageCenterY = SCREEN_HEIGHT / 2 + translateY.value;
       
-      // Store the sample point in screen coordinates for the circle overlay
-      setSamplePoint({ x: touchX, y: touchY });
-    }
-  };
+      // Position on the scaled image
+      const scaledWidth = imageDimensions.width * scale.value;
+      const scaledHeight = imageDimensions.height * scale.value;
+      
+      // Convert touch to image-relative coordinates
+      const imageRelativeX = (touchX - imageCenterX + scaledWidth / 2) / scale.value;
+      const imageRelativeY = (touchY - imageCenterY + scaledHeight / 2) / scale.value;
+
+      // Check if touch is within image bounds
+      if (
+        imageRelativeX >= 0 && imageRelativeX <= imageDimensions.width &&
+        imageRelativeY >= 0 && imageRelativeY <= imageDimensions.height
+      ) {
+        sampleColorFromImage(imageUri, imageRelativeX, imageRelativeY, imageDimensions.width, imageDimensions.height);
+        setSamplePoint({ x: touchX, y: touchY });
+      }
+    });
+
+  // Combined gesture
+  const gesture = Gesture.Simultaneous(
+    pinchGesture,
+    panGesture,
+    tapGesture
+  );
 
   // Sample color from image at tap coordinates
   // Note: Real pixel reading in Expo Go requires native modules (not available without build)
@@ -299,27 +291,19 @@ export const SnapshotScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <PanGestureHandler onGestureEvent={panHandler}>
+      <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.imageContainer, getImageStyle()]}>
-          <PinchGestureHandler onGestureEvent={pinchHandler}>
-            <TapGestureHandler onHandlerStateChange={({ nativeEvent }) => {
-              if (nativeEvent.state === 1) { // ACTIVE = tap recognized
-                handlePress(nativeEvent);
-              }
-            }}>
-              <Animated.Image
-                ref={viewShotRef}
-                source={{ uri: imageUri }}
-                style={[styles.image, animatedImageStyle]}
-                onLoad={onImageLoad}
-                resizeMode="contain"
-              />
-              <CircleOverlay point={samplePoint} />
-              <ColorLabel colorRgb={sampledColor} language={language} />
-            </TapGestureHandler>
-          </PinchGestureHandler>
+          <Animated.Image
+            ref={viewShotRef}
+            source={{ uri: imageUri }}
+            style={[styles.image, animatedImageStyle]}
+            onLoad={onImageLoad}
+            resizeMode="contain"
+          />
+          <CircleOverlay point={samplePoint} />
+          <ColorLabel colorRgb={sampledColor} language={language} />
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
 
       {/* Top Bar */}
       <View style={styles.topBar}>
