@@ -79,7 +79,7 @@ export const CameraScreen: React.FC = () => {
     <View style={styles.container}>
       <CameraView
         ref={cameraRef}
-        style={StyleSheet.absoluteFill}
+        style={styles.camera}
         facing={type}
         ratio="4:3"
       />
@@ -129,14 +129,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   camera: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   overlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 40,
-    paddingBottom: 30,
+    paddingBottom: 40,
   },
   topBar: {
     flexDirection: 'row',

@@ -1,27 +1,18 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: [
-      ["babel-preset-expo", { lazy: true }],
-      ["@babel/preset-env", { targets: { node: "current" } }],
-      "@babel/preset-typescript",
-    ],
+    presets: ['babel-preset-expo'],
     plugins: [
       [
-        "module-resolver",
+        'module-resolver',
         {
-          root: "./",
+          root: ['./'],
           alias: {
-            "@": "./src",
+            '@': './src',
           },
         },
       ],
-      "react-native-reanimated/plugin",
+      'react-native-reanimated/plugin',
     ],
-    env: {
-      production: {
-        plugins: ["transform-remove-console"],
-      },
-    },
   };
 };

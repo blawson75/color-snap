@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CameraScreen } from '../screens/CameraScreen';
 import { SnapshotScreen } from '../screens/SnapshotScreen';
 import { LanguagePicker } from '../screens/LanguagePicker';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -15,6 +16,13 @@ type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const withErrorBoundary = (Component: React.ComponentType<any>, screenName: string) =>
+  (props: any) => (
+    <ErrorBoundary screenName={screenName}>
+      <Component {...props} />
+    </ErrorBoundary>
+  );
+
 export const AppNavigator: React.FC = () => {
   return (
     <SafeAreaProvider>
@@ -25,19 +33,18 @@ export const AppNavigator: React.FC = () => {
               headerShown: false,
               gestureEnabled: true,
               animation: 'slide_from_right',
-              animationTypeForReplacement: 'push',
             }}
             initialRouteName="Camera"
           >
-            <Stack.Screen name="Camera" component={CameraScreen} />
+            <Stack.Screen name="Camera" component={withErrorBoundary(CameraScreen, 'Camera')} />
             <Stack.Screen
               name="Snapshot"
-              component={SnapshotScreen}
-              options={{ animation: 'slide_from_right', animationTypeForReplacement: 'pop' }}
+              component={withErrorBoundary(SnapshotScreen, 'Snapshot')}
+              options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
               name="LanguagePicker"
-              component={LanguagePicker}
+              component={withErrorBoundary(LanguagePicker, 'LanguagePicker')}
               options={{ animation: 'slide_from_bottom' }}
             />
           </Stack.Navigator>

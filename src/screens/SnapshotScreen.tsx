@@ -13,9 +13,7 @@ import {
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
-  useAnimatedGestureHandler,
   withTiming,
-  runOnJS,
   Easing,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -48,9 +46,20 @@ interface RouteParams {
 export const SnapshotScreen: React.FC = () => {
   const navigation = useNavigation<SnapshotNavigationProp>();
   const route = useRoute<SnapshotRouteProp>();
-  const { imageUri, language: initialLanguage } = route.params;
-
-  console.log('SnapshotScreen mounted with imageUri:', imageUri);
+  const params = route.params;
+  
+  console.log('SnapshotScreen mounted with params:', params);
+  
+  // Handle missing params gracefully
+  if (!params?.imageUri) {
+    console.error('Missing imageUri in route params, going back');
+    navigation.goBack();
+    return <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: '#fff', fontSize: 18 }}>Loading...</Text>
+    </View>;
+  }
+  
+  const { imageUri, language: initialLanguage } = params;
 
   const [language, setLanguage] = useState<LanguageCode>(initialLanguage);
   const [sampledColor, setSampledColor] = useState<{ r: number; g: number; b: number } | null>(null);
@@ -67,7 +76,7 @@ export const SnapshotScreen: React.FC = () => {
   const imageDims = useSharedValue({ width: 0, height: 0 });
 
   // ViewShot ref for saving
-  const viewShotRef = useRef<React.Component<any, any>>(null);
+  const viewShotRef = useRef<any>(null);
 
   // Calculate max translate bounds to keep image visible
   const getMaxTranslate = () => {
