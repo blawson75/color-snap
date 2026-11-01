@@ -24,11 +24,22 @@ export const AppNavigator: React.FC = () => {
             screenOptions={{
               headerShown: false,
               gestureEnabled: true,
+              animation: 'slide_from_right',
+              animationTypeForReplacement: 'push',
             }}
+            initialRouteName="Camera"
           >
             <Stack.Screen name="Camera" component={CameraScreen} />
-            <Stack.Screen name="Snapshot" component={SnapshotScreen} />
-            <Stack.Screen name="LanguagePicker" component={LanguagePicker} />
+            <Stack.Screen
+              name="Snapshot"
+              component={SnapshotScreen}
+              options={{ animation: 'slide_from_right', animationTypeForReplacement: 'pop' }}
+            />
+            <Stack.Screen
+              name="LanguagePicker"
+              component={LanguagePicker}
+              options={{ animation: 'slide_from_bottom' }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </GestureHandlerRootView>

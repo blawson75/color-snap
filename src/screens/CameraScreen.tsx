@@ -85,32 +85,38 @@ export const CameraScreen: React.FC = () => {
       />
       <View style={styles.overlay}>
         <View style={styles.topBar}>
-          <TouchableOpacity style={[styles.iconButton, styles.iconButtonVisible]} onPress={openLanguagePicker}>
+          <TouchableOpacity style={styles.topButton} onPress={openLanguagePicker}>
             <Ionicons name="globe" size={28} color="#fff" />
-            <Text style={styles.iconLabel}>LANG</Text>
+            <Text style={styles.topButtonText}>LANG</Text>
           </TouchableOpacity>
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={styles.titleContainer}>
             <Text style={styles.languageText}>{languages[language]}</Text>
           </View>
-          <View style={[styles.iconButton, styles.iconButtonVisible]} pointerEvents="none" />
+          <View style={styles.topButton} pointerEvents="none" />
         </View>
 
         <View style={styles.bottomBar}>
-          <TouchableOpacity style={[styles.iconButton, styles.iconButtonVisible]} onPress={flipCamera}>
+          <TouchableOpacity style={styles.sideButton} onPress={flipCamera}>
             <Ionicons name="camera-reverse" size={32} color="#fff" />
-            <Text style={styles.iconLabel}>FLIP</Text>
+            <Text style={styles.sideButtonText}>FLIP</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.shutterButton}
-            onPress={takeSnapshot}
-            activeOpacity={0.7}
-          >
-            <View style={styles.shutterRing}>
-              <View style={styles.shutterInner} />
-            </View>
-          </TouchableOpacity>
-          <View style={[styles.iconButton, styles.iconButtonVisible]} pointerEvents="none" />
+          <View style={styles.shutterContainer}>
+            <TouchableOpacity
+              style={styles.shutterButton}
+              onPress={takeSnapshot}
+              activeOpacity={0.7}
+            >
+              <View style={styles.shutterOuterRing}>
+                <View style={styles.shutterInnerRing}>
+                  <View style={styles.shutterCenterDot} />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.shutterText}>SNAP</Text>
+          </View>
+
+          <View style={styles.sideButton} pointerEvents="none" />
         </View>
       </View>
     </View>
@@ -142,71 +148,119 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  iconButton: {
-    padding: 10,
-  },
-  iconButtonVisible: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  topButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 24,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 56,
+    gap: 4,
+    minWidth: 64,
     minHeight: 56,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 4,
-    elevation: 4,
+    elevation: 6,
   },
-  iconLabel: {
+  topButtonText: {
     color: '#fff',
-    fontSize: 10,
-    fontWeight: '600',
-    marginTop: 2,
+    fontSize: 12,
+    fontWeight: '700',
     textShadowColor: '#000',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
   languageText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     textShadowColor: '#000',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
+  sideButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 24,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    minWidth: 64,
+    minHeight: 56,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 6,
+  },
+  sideButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  shutterContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   shutterButton: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    borderWidth: 4,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    borderWidth: 5,
     borderColor: '#fff',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.5,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 10,
   },
-  shutterRing: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+  shutterOuterRing: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     borderWidth: 3,
     borderColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shutterInnerRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  shutterInner: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#fff',
+  shutterCenterDot: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#000',
+  },
+  shutterText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '800',
+    marginTop: 6,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   permissionContainer: {
     flex: 1,
