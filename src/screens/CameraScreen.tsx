@@ -43,6 +43,7 @@ export const CameraScreen: React.FC = () => {
   }
 
   const takeSnapshot = async () => {
+    console.log('takeSnapshot called');
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({
@@ -50,13 +51,19 @@ export const CameraScreen: React.FC = () => {
           base64: false,
           skipProcessing: true,
         });
+        console.log('Photo taken:', photo);
         if (photo?.uri) {
+          console.log('Navigating to Snapshot with:', photo.uri);
           navigation.navigate('Snapshot', { imageUri: photo.uri, language });
+        } else {
+          console.error('No photo URI returned');
         }
       } catch (error) {
         console.error('Snapshot error:', error);
         Alert.alert('Error', 'Failed to take snapshot. Please try again.');
       }
+    } else {
+      console.error('Camera ref is null');
     }
   };
 

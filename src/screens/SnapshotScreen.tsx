@@ -50,6 +50,8 @@ export const SnapshotScreen: React.FC = () => {
   const route = useRoute<SnapshotRouteProp>();
   const { imageUri, language: initialLanguage } = route.params;
 
+  console.log('SnapshotScreen mounted with imageUri:', imageUri);
+
   const [language, setLanguage] = useState<LanguageCode>(initialLanguage);
   const [sampledColor, setSampledColor] = useState<{ r: number; g: number; b: number } | null>(null);
   const [samplePoint, setSamplePoint] = useState<{ x: number; y: number } | null>(null);
