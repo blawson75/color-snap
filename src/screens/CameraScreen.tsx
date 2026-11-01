@@ -79,37 +79,38 @@ export const CameraScreen: React.FC = () => {
     <View style={styles.container}>
       <CameraView
         ref={cameraRef}
-        style={styles.camera}
+        style={StyleSheet.absoluteFill}
         facing={type}
         ratio="4:3"
-      >
-        <View style={styles.overlay}>
-          <View style={styles.topBar}>
-            <TouchableOpacity style={styles.iconButton} onPress={openLanguagePicker}>
-              <Ionicons name="globe" size={28} color="#fff" />
-            </TouchableOpacity>
+      />
+      <View style={styles.overlay}>
+        <View style={styles.topBar}>
+          <TouchableOpacity style={styles.iconButton} onPress={openLanguagePicker}>
+            <Ionicons name="globe" size={28} color="#fff" />
+          </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={styles.languageText}>{languages[language]}</Text>
           </View>
-
-          <View style={styles.bottomBar}>
-            <TouchableOpacity style={styles.iconButton} onPress={flipCamera}>
-              <Ionicons name="camera-reverse" size={28} color="#fff" />
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={[styles.shutterButton, !isSnapshotMode && styles.shutterActive]} 
-              onPress={takeSnapshot}
-              activeOpacity={0.8}
-            >
-              <View style={styles.shutterInner} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.iconButton} onPress={openLanguagePicker}>
-              <Ionicons name="color-palette" size={28} color="#fff" />
-            </TouchableOpacity>
-          </View>
+          <View style={styles.iconButton} pointerEvents="none" />
         </View>
-      </CameraView>
+
+        <View style={styles.bottomBar}>
+          <TouchableOpacity style={styles.iconButton} onPress={flipCamera}>
+            <Ionicons name="camera-reverse" size={32} color="#fff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.shutterButton}
+            onPress={takeSnapshot}
+            activeOpacity={0.7}
+          >
+            <View style={styles.shutterRing}>
+              <View style={styles.shutterInner} />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.iconButton} pointerEvents="none" />
+        </View>
+      </View>
     </View>
   );
 };
@@ -151,22 +152,34 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   shutterButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     borderWidth: 4,
     borderColor: '#fff',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  shutterRing: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderWidth: 3,
+    borderColor: '#fff',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  shutterActive: {
-    backgroundColor: '#fff',
-  },
   shutterInner: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#fff',
   },
   permissionContainer: {
