@@ -62,34 +62,50 @@ export const SnapshotScreen: React.FC = () => {
   const translateY = useSharedValue(0);
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
+  const imageDims = useSharedValue({ width: 0, height: 0 });
 
   // ViewShot ref for saving
   const viewShotRef = useRef<React.Component<any, any>>(null);
 
   // Calculate max translate bounds to keep image visible
-  const getMaxTranslate = useCallback(() => {
-    if (!imageDimensions) return { maxX: 0, maxY: 0 };
+  const getMaxTranslate = () => {
+    'worklet';
+    const dims = imageDims.value;
+    if (!dims.width || !dims.height) return { maxX: 0, maxY: 0 };
     
-    const scaledWidth = imageDimensions.width * scale.value;
-    const scaledHeight = imageDimensions.height * scale.value;
+    const scaledWidth = dims.width * scale.value;
+    const scaledHeight = dims.height * scale.value;
     
     const maxX = Math.max(0, (scaledWidth - SCREEN_WIDTH) / 2);
     const maxY = Math.max(0, (scaledHeight - SCREEN_HEIGHT) / 2);
     
     return { maxX, maxY };
-  }, [imageDimensions]);
+  };
+
+  // Handle image load to get dimensions
+  const onImageLoad = (event: any) => {
+    const dims = {
+      width: event.nativeEvent.source.width,
+      height: event.nativeEvent.source.height,
+    };
+    setImageDimensions(dims);
+    imageDims.value = dims;
+  };
 
   // Pinch gesture handler
   const pinchHandler = useAnimatedGestureHandler<GestureEvent<{ focalX: number; focalY: number; scale: number }>>({
     onStart: (event, _ctx) => {
+      'worklet';
       focalX.value = event.focalX;
       focalY.value = event.focalY;
     },
     onActive: (event, _ctx) => {
+      'worklet';
       const newScale = Math.max(1, Math.min(5, scale.value * event.scale));
       scale.value = newScale;
     },
     onEnd: () => {
+      'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
         Math.max(-maxX, Math.min(maxX, translateX.value)),
@@ -105,11 +121,13 @@ export const SnapshotScreen: React.FC = () => {
   // Pan gesture handler
   const panHandler = useAnimatedGestureHandler<GestureEvent<{ translationX: number; translationY: number }>>({
     onActive: (event, _ctx) => {
+      'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = Math.max(-maxX, Math.min(maxX, event.translationX));
       translateY.value = Math.max(-maxY, Math.min(maxY, event.translationY));
     },
     onEnd: () => {
+      'worklet';
       const { maxX, maxY } = getMaxTranslate();
       translateX.value = withTiming(
         Math.max(-maxX, Math.min(maxX, translateX.value)),
@@ -212,14 +230,6 @@ export const SnapshotScreen: React.FC = () => {
     setSampledColor(color);
   };
 
-  // Handle image load to get dimensions
-  const onImageLoad = (event: any) => {
-    setImageDimensions({
-      width: event.nativeEvent.source.width,
-      height: event.nativeEvent.source.height,
-    });
-  };
-
   // Save the annotated image
   const handleSave = async () => {
     if (!viewShotRef.current) return;
@@ -268,6 +278,7 @@ export const SnapshotScreen: React.FC = () => {
 
   // Animated style for the image
   const animatedImageStyle = useAnimatedStyle(() => {
+    'worklet';
     return {
       transform: [
         { translateX: translateX.value },

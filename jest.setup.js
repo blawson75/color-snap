@@ -51,7 +51,8 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }) => children,
 }));
 
-jest.mock('@expo/vector-icons', () => ({
+jest.mock('expo', () => ({
+  ...jest.requireActual('expo'),
   Ionicons: ({ children, ...props }) => null,
 }));
 

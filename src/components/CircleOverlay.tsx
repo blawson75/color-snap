@@ -19,6 +19,7 @@ export const CircleOverlay: React.FC<CircleOverlayProps> = ({ point, size = 80 }
   }, [point]);
 
   const animatedStyle = useAnimatedStyle(() => {
+    'worklet';
     const scale = animatedScale.value;
     return {
       transform: [

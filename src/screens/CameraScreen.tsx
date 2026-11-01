@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
-import { Camera, CameraType, useCameraPermissions } from 'expo-camera';
-import CameraView from 'expo-camera/build/CameraView';
-import { CameraProps } from 'expo-camera/build/Camera.types';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
