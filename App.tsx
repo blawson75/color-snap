@@ -1,9 +1,7 @@
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { registerRootComponent } from 'expo';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
-export default function App() {
-  return <AppNavigator />;
-}
+const App = () => <AppNavigator />;
 
-AppRegistry.registerComponent('ColorSnap', () => App);
+registerRootComponent(App);
