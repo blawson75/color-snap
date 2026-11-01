@@ -18,7 +18,7 @@ import Animated, {
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { PanGestureHandler, PinchGestureHandler, GestureEvent } from 'react-native-gesture-handler';
+import { PanGestureHandler, PinchGestureHandler, TapGestureHandler, GestureEvent } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -309,15 +309,21 @@ export const SnapshotScreen: React.FC = () => {
       <PanGestureHandler onGestureEvent={panHandler}>
         <Animated.View style={[styles.imageContainer, getImageStyle()]}>
           <PinchGestureHandler onGestureEvent={pinchHandler}>
-            <Animated.Image
-              ref={viewShotRef}
-              source={{ uri: imageUri }}
-              style={[styles.image, animatedImageStyle]}
-              onLoad={onImageLoad}
-              resizeMode="contain"
-            />
-            <CircleOverlay point={samplePoint} />
-            <ColorLabel colorRgb={sampledColor} language={language} />
+            <TapGestureHandler onHandlerStateChange={({ nativeEvent }) => {
+              if (nativeEvent.state === 1) { // ACTIVE = tap recognized
+                handlePress(nativeEvent);
+              }
+            }}>
+              <Animated.Image
+                ref={viewShotRef}
+                source={{ uri: imageUri }}
+                style={[styles.image, animatedImageStyle]}
+                onLoad={onImageLoad}
+                resizeMode="contain"
+              />
+              <CircleOverlay point={samplePoint} />
+              <ColorLabel colorRgb={sampledColor} language={language} />
+            </TapGestureHandler>
           </PinchGestureHandler>
         </Animated.View>
       </PanGestureHandler>
