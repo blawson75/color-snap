@@ -85,18 +85,20 @@ export const CameraScreen: React.FC = () => {
       />
       <View style={styles.overlay}>
         <View style={styles.topBar}>
-          <TouchableOpacity style={styles.iconButton} onPress={openLanguagePicker}>
+          <TouchableOpacity style={[styles.iconButton, styles.iconButtonVisible]} onPress={openLanguagePicker}>
             <Ionicons name="globe" size={28} color="#fff" />
+            <Text style={styles.iconLabel}>LANG</Text>
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={styles.languageText}>{languages[language]}</Text>
           </View>
-          <View style={styles.iconButton} pointerEvents="none" />
+          <View style={[styles.iconButton, styles.iconButtonVisible]} pointerEvents="none" />
         </View>
 
         <View style={styles.bottomBar}>
-          <TouchableOpacity style={styles.iconButton} onPress={flipCamera}>
+          <TouchableOpacity style={[styles.iconButton, styles.iconButtonVisible]} onPress={flipCamera}>
             <Ionicons name="camera-reverse" size={32} color="#fff" />
+            <Text style={styles.iconLabel}>FLIP</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -108,7 +110,7 @@ export const CameraScreen: React.FC = () => {
               <View style={styles.shutterInner} />
             </View>
           </TouchableOpacity>
-          <View style={styles.iconButton} pointerEvents="none" />
+          <View style={[styles.iconButton, styles.iconButtonVisible]} pointerEvents="none" />
         </View>
       </View>
     </View>
@@ -142,6 +144,30 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 10,
+  },
+  iconButtonVisible: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 56,
+    minHeight: 56,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  iconLabel: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 2,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   languageText: {
     color: '#fff',
